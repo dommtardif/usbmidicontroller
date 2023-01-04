@@ -28,6 +28,31 @@ const int ADC_CSPin = 10;
 //Midi channel to operate on
 const byte midiChannel = 0;
 
+void midiPresetReturn(){
+midiEventPacket_t rx;
+  do {
+    rx = MidiUSB.read();
+    if (rx.header != 0) {
+      if (rx.byte1 == 0xC0) {
+        Serial.print("Preset Changed to:");
+        Serial.println(rx.byte2);    
+      }
+      if (rx.byte1 == 0xB0) {
+        Serial.print("Bank Changed to:");
+        Serial.println(rx.byte3);        
+      }      
+      // Serial.print("Received: ");
+      // Serial.print(rx.header, HEX);
+      // Serial.print("-");
+      // Serial.print(rx.byte1, HEX);
+      // Serial.print("-");
+      // Serial.print(rx.byte2, HEX);
+      // Serial.print("-");
+      // Serial.println(rx.byte3, HEX);
+    }
+  } while (rx.header != 0);  
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -64,7 +89,7 @@ void loop() {
       delay(250);
     }
   }
-
+  midiPresetReturn();  
   int tmpRead = 0;
   for (int port = 0; port < potsQty; port++) {
     tmpRead = mapPot(adc.analogRead(port));

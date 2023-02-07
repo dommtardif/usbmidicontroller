@@ -6,22 +6,22 @@
 MCP3008 adc;
 
 //Number of pots connected to ADC
-const int potsQty = 3;
+const int potsQty = 4;
 
 //Pots midi controller number
-const int potsMidiController[potsQty] = { 16, 17, 18 };
+const int potsMidiController[potsQty] = { 16, 17, 18, 19 };
 
 //Pots previous values
 int potsPrevVal[potsQty];
 
 //Quanty of buttons connected to digital IO
-const int buttonsQty = 4;
+const int buttonsQty = 8;
 
 //Buttons pin definitions
-const int buttonsPin[buttonsQty] = { 5, 4, 3, 2 };
+const int buttonsPin[buttonsQty] = { 9, 8, 7, 6, 5, 4, 3, 2 };
 
 //Buttons midi controller numner
-const int buttonsMidiController[buttonsQty] = { 10, 11, 12, 13 };
+const int buttonsMidiController[buttonsQty] = { 8, 9, 10, 11, 12, 13, 14, 15 };
 
 //ADC chip select pin
 const int ADC_CSPin = 10;
@@ -57,20 +57,19 @@ void controlChange(byte channel, byte control, byte value) {
 }
 
 //Receive guitarX preset change
-void midiPresetReturn() {
-  midiEventPacket_t rx;
-  bool receivedPacket = false;
-  do {
-    rx = MidiUSB.read();
-    switch (rx.header) {
-      case 0xC:
-        Serial.print("Preset Changed to:");
-        Serial.println(rx.byte2);
-        break;
-    }
-  }
-  while (rx.header != 0);
-}
+// void midiPresetReturn() {
+//   midiEventPacket_t rx;
+//   bool receivedPacket = false;
+//   do {
+//     rx = MidiUSB.read();
+//     switch (rx.header) {
+//       case 0xC:
+//         Serial.print("Preset Changed to:");
+//         Serial.println(rx.byte2);
+//         break;
+//     }
+//   } while (rx.header != 0);
+// }
 
 void loop() {
   //Read buttons input and send to midi accordingly
@@ -81,7 +80,7 @@ void loop() {
     }
   }
 
-  int tmpRead = 0; //temporary reading of pots to send midi only on change
+  int tmpRead = 0;  //temporary reading of pots to send midi only on change
 
   //Read all pots values and send to midi accordingly
   for (int port = 0; port < potsQty; port++) {
@@ -91,6 +90,6 @@ void loop() {
       potsPrevVal[port] = tmpRead;
     }
   }
-  
-  midiPresetReturn();
+
+  //midiPresetReturn();
 }

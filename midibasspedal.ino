@@ -6,10 +6,10 @@
 MCP3008 adc;
 
 //Number of pots connected to ADC
-const int potsQty = 4;
+const int potsQty = 8;
 
 //Pots midi controller number
-const int potsMidiController[potsQty] = { 16, 17, 18, 19 };
+const int potsMidiController[potsQty] = { 16, 17, 18, 19 , 20 , 21 , 22 , 23};
 
 //Pots previous values
 int potsPrevVal[potsQty];
@@ -19,10 +19,8 @@ const int buttonsQty = 8;
 
 //Buttons pin definitions
 const int buttonsPin[buttonsQty] = { 9, 8, 7, 6, 5, 4, 3, 2 };
-
 //Buttons midi controller numner
 const int buttonsMidiController[buttonsQty] = { 8, 9, 10, 11, 12, 13, 14, 15 };
-
 //ADC chip select pin
 const int ADC_CSPin = 10;
 
@@ -36,7 +34,7 @@ void setup() {
 
   //Set all pins to input
   for (int button = 0; button < buttonsQty; button++) {
-    pinMode(buttonsPin[button], INPUT);
+    pinMode(buttonsPin[button], INPUT_PULLUP);
   }
   //Gather all pots initial values
   for (int port = 0; port < potsQty; port++) {
@@ -56,7 +54,7 @@ void controlChange(byte channel, byte control, byte value) {
   MidiUSB.flush();
 }
 
-//Receive guitarX preset change
+//Receive guitariX preset change
 // void midiPresetReturn() {
 //   midiEventPacket_t rx;
 //   bool receivedPacket = false;
@@ -74,9 +72,13 @@ void controlChange(byte channel, byte control, byte value) {
 void loop() {
   //Read buttons input and send to midi accordingly
   for (int button = 0; button < buttonsQty; button++) {
-    if (digitalRead(buttonsPin[button]) == HIGH) {
+    if (digitalRead(buttonsPin[button]) == LOW) {
       controlChange(midiChannel, buttonsMidiController[button], 127);
-      delay(250);
+      //delay(250);
+      // Serial.print("Switch # ");
+      // Serial.print(button);
+      // Serial.println(" pressed");
+      continue;
     }
   }
 
@@ -85,9 +87,14 @@ void loop() {
   //Read all pots values and send to midi accordingly
   for (int port = 0; port < potsQty; port++) {
     tmpRead = mapPot(adc.analogRead(port));
-    if (tmpRead != potsPrevVal[port]) {
+    while (tmpRead <= potsPrevVal[port] - 2 | tmpRead >= potsPrevVal[port] + 2) {
       controlChange(midiChannel, potsMidiController[port], tmpRead);
+      // Serial.print("Pot # ");
+      // Serial.print(port);
+      // Serial.print(" value ");
+      // Serial.println(tmpRead);
       potsPrevVal[port] = tmpRead;
+      tmpRead = mapPot(adc.analogRead(port));
     }
   }
 

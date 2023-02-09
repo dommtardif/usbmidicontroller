@@ -74,10 +74,10 @@ void loop() {
   for (int button = 0; button < buttonsQty; button++) {
     if (digitalRead(buttonsPin[button]) == LOW) {
       controlChange(midiChannel, buttonsMidiController[button], 127);
-      //delay(250);
-      // Serial.print("Switch # ");
-      // Serial.print(button);
-      // Serial.println(" pressed");
+      delay(250);
+      Serial.print("Switch # ");
+      Serial.print(button);
+      Serial.println(" pressed");
       continue;
     }
   }
@@ -89,10 +89,10 @@ void loop() {
     tmpRead = mapPot(adc.analogRead(port));
     while (tmpRead <= potsPrevVal[port] - 2 | tmpRead >= potsPrevVal[port] + 2) {
       controlChange(midiChannel, potsMidiController[port], tmpRead);
-      // Serial.print("Pot # ");
-      // Serial.print(port);
-      // Serial.print(" value ");
-      // Serial.println(tmpRead);
+      Serial.print("Pot # ");
+      Serial.print(port);
+      Serial.print(" value ");
+      Serial.println(tmpRead);
       potsPrevVal[port] = tmpRead;
       tmpRead = mapPot(adc.analogRead(port));
     }

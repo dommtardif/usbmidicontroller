@@ -22,3 +22,8 @@ This is the firmware for a MIDI controller that uses analog-to-digital conversio
 ## Usage
 
 Upload this firmware to an Arduino board, connect the necessary components (ADC, buttons, potentiometers), and connect the board to your computer or MIDI device using a USB cable. The firmware will continuously read the inputs and send MIDI control change messages as necessary.
+
+## Schematic
+
+![Alt text](Prototype schematic)
+<img src="./pedalproto1_schem.svg">
